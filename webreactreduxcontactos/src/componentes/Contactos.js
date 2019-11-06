@@ -1,21 +1,20 @@
 import React, {Component} from 'react';
 import {Label, FormGroup, Input, Modal, ModalHeader, ModalBody, ModalFooter, Table, Button} from 'reactstrap';
-import { Link, Redirect} from 'react-router-dom';
-import axios from 'axios';
+import { Redirect} from 'react-router-dom';
 import { confirmAlert } from 'react-confirm-alert';
 import 'react-confirm-alert/src/react-confirm-alert.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {connect} from 'react-redux';
 import ContactosList from './ContactosList';
-import {fetchContactos} from '../actions/actionsContactos';
+import {fetchContactos, saveContactos, updateContactos, deleteContactos} from '../actions/actionsContactos';
+import AlertaError from './AlertaError';
 /*import Navegacion from './Navegacion';*/
 //Una Clase que extiende del component de React se comvierte en una etiqueta html
 class Contactos extends Component  {
   componentDidMount()
   {
-    this.props.fetchContactos();
+    this.refrescarContactos();
   }
-
   constructor(props){
     super(props);
     const token = localStorage.getItem("token");
@@ -24,6 +23,7 @@ class Contactos extends Component  {
       loggedIn = false;
     }
     this.state = {
+      alert_message:'',
       contactos: [],
       datosNuevoContacto: {
         Nombre: '',
@@ -49,8 +49,13 @@ class Contactos extends Component  {
  //editarContactoModal - Para la visualización  y cierre de la ventana modal de modificación
 
  //Método que refrescara el Table
-  componentWillMount(){
-    this.refrescarContactos();
+
+  refrescarContactos(){
+    this.props.fetchContactos();
+    
+  }
+  componentWillReceiveProps(nextProps){
+     //entra cada vez que se ejecuta un evento transaccional
   }
 //Método que niega el valor de la variable nuevoContactoModal inicializada en false, esto
 //permite mostrar el Modal para la Alta y inicializa los datos del objeto datosNuevoContacto, y
@@ -80,39 +85,75 @@ class Contactos extends Component  {
 //Método que permite guardar los datos capturados en el modal de Alta
   agregarContacto (){
 
-    axios.post('https://localhost:44386/api/Contactos', this.state.datosNuevoContacto).then((response)=>{
-    //Se setea la variable de state contactos, los simbolo {} permiten usarla para setearla por medio de let
-    //this.state contiene los contactos que se renderizaron en el Table
-      let {contactos} = this.state;
-      //Se agrega al final el contacto que devolvio el metodo post de la api contactos
-      contactos.push(response.data);
-      //Inicializa el estado de las variables nuevoContactoModal y el objeto datosNuevoContacto
-      this.setState({contactos, nuevoContactoModal:false, datosNuevoContacto: {
-        Nombre: '',
-        Celular: '',
-        Sexo: ''
-      }});
-
-    });
+    let {Nombre, Celular, Sexo} = this.state.datosNuevoContacto;
+    let errors = {};
+    errors.title = "hubo error";
+    this.setState({errors});
+    const isValid = Object.keys(errors).length === 0;
+  
+    
+      this.props.saveContactos({Nombre, Celular, Sexo}).then(
+        (response)=>{
+          //Se setea la variable de state contactos, los simbolo {} permiten usarla para setearla por medio de let
+          //this.state contiene los contactos que se renderizaron en el Table
+            let {contactos} = this.state;
+            //Se agrega al final el contacto que devolvio el metodo post de la api contactos
+            contactos.push(response.data);
+            //Inicializa el estado de las variables nuevoContactoModal y el objeto datosNuevoContacto
+            this.setState({contactos, nuevoContactoModal:false, datosNuevoContacto: {
+              Nombre: '',
+              Celular: '',
+              Sexo: ''
+            }, alert_message: ''});
+        }, 
+        (err) => err.response.json().then(()=>{
+          //Entra cuando los errores son superficiales, por ejemplo cuando los datos que se capturan no 
+          //coinciden con el tipo de dato 
+          this.setState({
+            alert_message: 'No se pudo agregar el contacto'
+          })
+        }
+        )
+      ).catch(error=>{
+        //entra cuando los errores se propagan desde la base de datos, por ejemplo cuando la logitud de un 
+        //  es superior al campo de la base de datos
+        this.setState({
+          alert_message: 'No se pudo agregar el contacto'
+        });
+      });
+  
+  
   }
 
 //Método que permite guardar los datos capturados en el modal de Modificación
   actualizarContacto()
   {
     let {Id, Nombre, Celular, Sexo} = this.state.datosEditarContacto;
-
-      axios.put('https://localhost:44386/api/Contactos/' + this.state.datosEditarContacto.Id, {
-      Id, Nombre, Celular, Sexo
-    }).then((response)=>{
-      //Se refresca el Table
-      this.refrescarContactos();
-      //Se inicializan la variable editarContactoModal y el objeto de datosEditarContacto
-      this.setState({editarContactoModal: false, datosEditarContacto: {
+  
+    this.props.updateContactos({Id, Nombre, Celular, Sexo}).then(
+      ()=>{
+          //Se refresca el Table
+          this.refrescarContactos();
+          //Inicializa el estado de las variables nuevoContactoModal y el objeto datosNuevoContacto
+          this.setState({editarContactoModal: false, datosEditarContacto: {
             Id: '',
             Nombre: '',
             Celular: '',
             Sexo: ''
-        }});
+          }, alert_message: ''});
+      },
+      (err) => err.response.json().then(()=>{
+        this.setState({
+          alert_message: 'No se pudo actualizar el contacto'
+        })
+        }
+      )
+    ).catch(error=>{
+      //entra cuando los errores se propagan desde la base de datos, por ejemplo cuando la logitud de un 
+      //  es superior al campo de la base de datos
+      this.setState({
+        alert_message: 'No se pudo actualizar el contacto'
+      });
     });
   }
 //Método para eliminar un Contacto
@@ -134,12 +175,28 @@ class Contactos extends Component  {
                   No
                </Button>
               <Button color="primary" size="sm" className="btn btn-default "
-                  onClick={() => {
-                    axios.delete('https://localhost:44386/api/Contactos/'+id).then((response)=>{
-                       this.refrescarContactos();
-                       onClose();
-                     });
-                  }}
+                    onClick={() => {
+                      this.props.deleteContactos(id).then(
+                        ()=>{
+                            //Se refresca el Table
+                            this.refrescarContactos();
+                            onClose();
+                        }, 
+                        (error) => error.response.json().then(()=>
+                          {
+                            this.setState({
+                              alert_message: 'No se pudo eliminar el contacto'
+                            })
+                          }
+                        )
+                      ).catch(error=>{
+                        //entra cuando los errores se propagan desde la base de datos, por ejemplo cuando la logitud de un 
+                        //  es superior al campo de la base de datos
+                        this.setState({
+                          alert_message: 'No se pudo eliminar el contacto'
+                        });
+                      });
+                    }}
                 >
                   <FontAwesomeIcon className="mr-1" icon="check" />
                    Si
@@ -152,13 +209,6 @@ class Contactos extends Component  {
       }
     });
  }
-  refrescarContactos(){
-    axios.get('https://localhost:44386/api/Contactos').then((response)=>{
-      this.setState({
-        contactos: response.data
-      })
-    });
-  }
 
   //Nota: this.state mantiene el estado de las variables, es como un get pero para setear una  variables
   // se debe ocupar
@@ -180,7 +230,7 @@ class Contactos extends Component  {
     //Se setea a la variable local contactosReg el objeto contactos que se lleno al ejecutarse el método
     //componentWillMount en automatico y se retorna las filas del Table más una columna con los botones de
     //Editar y eliminar
-    let contactosReg = this.state.contactos.map((contacto)=>{
+    let contactosReg = this.props.contactos.map((contacto)=>{
       return(
         <tr key={contacto.Id}>
           <td>{contacto.Id}</td>
@@ -225,13 +275,14 @@ class Contactos extends Component  {
         <Modal isOpen={this.state.nuevoContactoModal}  toggle={this.toggleNuevoContactoModal.bind(this)}>
           <ModalHeader toggle={this.toggleNuevoContactoModal.bind(this)}>Agregar un Contacto</ModalHeader>
           <ModalBody>
+          {this.state.alert_message!=""?<AlertaError mensaje={this.state.alert_message} />:null}
             <FormGroup>
               <Label for="Nombre">Nombre</Label>
               <Input  id="Nombre" value={this.state.datosNuevoContacto.Nombre} onChange={(e)=>{
                 let {datosNuevoContacto} = this.state;
                 datosNuevoContacto.Nombre = e.target.value;
                 this.setState({datosNuevoContacto});
-              }}/>
+              }} required="true" maxlength="100"/>
             </FormGroup>
             <FormGroup>
               <Label for="Celular">Celular</Label>
@@ -239,7 +290,7 @@ class Contactos extends Component  {
                 let {datosNuevoContacto} = this.state;
                 datosNuevoContacto.Celular = e.target.value;
                 this.setState({datosNuevoContacto});
-              }}/>
+              }} required = "true"/>
             </FormGroup>
             <FormGroup>
               <Label for="Sexo">Sexo</Label>
@@ -247,7 +298,7 @@ class Contactos extends Component  {
                 let {datosNuevoContacto} = this.state;
                 datosNuevoContacto.Sexo = e.target.value;
                 this.setState({datosNuevoContacto});
-              }}/>
+              }} required="true" maxlength="3" minlength="3"/>
             </FormGroup>
           </ModalBody>
          <ModalFooter>
@@ -259,13 +310,14 @@ class Contactos extends Component  {
         <Modal isOpen={this.state.editarContactoModal}  toggle={this.toggleEditarContactoModal.bind(this)}>
          <ModalHeader toggle={this.toggleEditarContactoModal.bind(this)}>Editar un Contacto</ModalHeader>
          <ModalBody>
+         {this.state.alert_message!=""?<AlertaError mensaje={this.state.alert_message} />:null}
           <FormGroup>
             <Label for="Nombre">Nombre</Label>
             <Input  id="Nombre" value={this.state.datosEditarContacto.Nombre} onChange={(e)=>{
               let {datosEditarContacto} = this.state;
               datosEditarContacto.Nombre = e.target.value;
               this.setState({datosEditarContacto});
-            }}/>
+            }} required="true" maxlength="100"/>
           </FormGroup>
           <FormGroup>
             <Label for="Celular">Celular</Label>
@@ -273,7 +325,7 @@ class Contactos extends Component  {
               let {datosEditarContacto} = this.state;
               datosEditarContacto.Celular = e.target.value;
               this.setState({datosEditarContacto});
-            }}/>
+            }} required="true"/>
           </FormGroup>
           <FormGroup>
             <Label for="Sexo">Sexo</Label>
@@ -281,7 +333,7 @@ class Contactos extends Component  {
               let {datosEditarContacto} = this.state;
               datosEditarContacto.Sexo = e.target.value;
               this.setState({datosEditarContacto});
-            }}/>
+            }} required="true" maxlength="3" minlength="3"/>
           </FormGroup>
         </ModalBody>
         <ModalFooter>
@@ -301,9 +353,10 @@ class Contactos extends Component  {
           </thead>
           <tbody>
             {contactosReg}
+            
           </tbody>
         </Table>
-        <ContactosList contactos={this.props.contactos}></ContactosList>
+        
       </div>
     </div>
     );
@@ -318,4 +371,4 @@ function mapStateToProps (state)
   }
 }
 
-export default connect(mapStateToProps, {fetchContactos})(Contactos);
+export default connect(mapStateToProps, {fetchContactos, saveContactos, updateContactos, deleteContactos})(Contactos);
