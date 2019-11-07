@@ -143,7 +143,6 @@ render(){
                                 this.setState({datosUsuario});
                               }} required="true"
                               onBlur={(e)=>{
-                                let {isNullEmail} = this.state;
                                 if (e.target.value == '')
                                   {
                                     this.setState({isNullEmail: 'true'});
@@ -167,7 +166,6 @@ render(){
                                   this.setState({datosUsuario});
                                 }}  required="true" maxlength="10" minlength="10"
                                 onBlur={(e)=>{
-                                  let {isNullPassword} = this.state;
                                   if (e.target.value == '')
                                     {
                                       this.setState({isNullPassword: 'true'});
@@ -191,7 +189,6 @@ render(){
                                   this.setState({datosUsuario});
                                 }}  required="true" maxlength="10" minlength="10"
                                 onBlur={(e)=>{
-                                  let {isNullComfirmPassword} = this.state;
                                   if (e.target.value == '')
                                     {
                                       this.setState({isNullComfirmPassword: 'true'});

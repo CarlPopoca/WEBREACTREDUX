@@ -115,7 +115,6 @@ validacionBoton(e){
                                     datosUsuario.Email = e.target.value;
                                     this.setState({datosUsuario});
                                   }} required="true" onBlur={(e)=>{
-                                    let {isNullEmail} = this.state;
                                     if (e.target.value == '')
                                       {
                                         this.setState({isNullEmail: 'true'});
@@ -137,7 +136,6 @@ validacionBoton(e){
                                     datosUsuario.Password = e.target.value;
                                     this.setState({datosUsuario});
                                   }}  required="true" maxlength="10" minlength="10" onBlur={(e)=>{
-                                    let {isNullPassword} = this.state;
                                     if (e.target.value == '')
                                       {
                                         this.setState({isNullPassword: 'true'});

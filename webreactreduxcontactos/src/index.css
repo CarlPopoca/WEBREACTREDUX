@@ -13,10 +13,13 @@ code {
 }
 
 /* You can add global styles to this file, and also import other style files */
-input.ng-touched.ng-invalid {
+.red-input{
+  border-width: 1;
+  margin-bottom: 20;
   border-color: #dc3545;
+  
 }
-input.ng-valid {
+.green-input{
   border-color:#28a745;
 }
 .green-icon {
