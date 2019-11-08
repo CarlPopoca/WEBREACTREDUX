@@ -1,7 +1,8 @@
 import React, {Component, Fragment} from 'react';
-import { Nav, NavItem, NavLink} from 'reactstrap';
-import {withRouter } from 'react-router-dom';
+import {Nav, NavItem} from 'reactstrap';
+import {withRouter,NavLink,  } from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar';
+
 
 class NavMenu extends Component {
   constructor(props) {
@@ -44,7 +45,7 @@ changeNavItem(currentRoute){
       var letLogout = (
         <Fragment>
           <NavItem>
-            <NavLink href="/cerrarSesion">Cerrar sesion</NavLink>
+            <NavLink className="nav-link" to="/cerrarSesion">Cerrar sesion</NavLink>
           </NavItem>
          </Fragment>
       )
@@ -53,10 +54,10 @@ changeNavItem(currentRoute){
        var letLogin = (
          <Fragment>
              <NavItem>
-               <NavLink href="/iniciarSesion">Iniciar sesión</NavLink>
+               <NavLink className="nav-link" to="/iniciarSesion">Iniciar sesión</NavLink>
              </NavItem>
              <NavItem>
-               <NavLink href="/registrarUsuario">Registrar Usuario</NavLink>
+               <NavLink className="nav-link" to="/registrarUsuario">Registrar Usuario</NavLink>
              </NavItem>
         </Fragment>
         )
@@ -65,15 +66,14 @@ changeNavItem(currentRoute){
     return (
       <div>
         <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
-
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             <Nav pills location={this.props.location}>
-              <NavItem>
-                <NavLink href="/" active>Aplicación de Contactos</NavLink>
+            <NavItem>
+                <NavLink className="nav-link" to="/">Aplicación de Contactos</NavLink>
               </NavItem>
               <NavItem>
-                <NavLink href="/contactos">Contactos</NavLink>
+                <NavLink className="nav-link" to="/contactos">Contactos</NavLink>
               </NavItem>
                 {letLogout}
                 {letLogin}

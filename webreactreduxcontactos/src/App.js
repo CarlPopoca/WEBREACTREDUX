@@ -15,17 +15,15 @@ import { faCheckSquare, faCoffee, faTrashAlt, faExclamationTriangle, faTimes, fa
 
 //Una Clase que extiende del component de React se comvierte en una etiqueta html
 class App extends Component  {
-
   render(){
     library.add(fab, faCheckSquare, faCoffee, faTrashAlt, faExclamationTriangle, faTimes, faCheck, faUserCircle, faKey, faSignInAlt, faDatabase);
-
       return(
         <div className="App">
           <header className="App-header">
             <img src={logo} className="App-logo" alt="logo" />
           </header>
           <body>
-          <Routers>
+            <Routers>
               <Switch>
                 <Fragment>
                   <NavMenu location={this.props.location}></NavMenu>

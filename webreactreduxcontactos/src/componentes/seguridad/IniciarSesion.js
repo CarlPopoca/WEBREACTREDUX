@@ -2,7 +2,7 @@ import React, {Component, Fragment} from 'react'
 import {Redirect} from 'react-router-dom'
 import AlertaError from '../AlertaError';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {iniciarSesionUsuario} from '../../actions/actionsUsuarios';
+import {iniciarSesion} from '../../actions/actionsIniciarSesion';
 import {connect} from 'react-redux';
 
 class IniciarSesion extends Component{
@@ -50,7 +50,7 @@ class IniciarSesion extends Component{
   {
     let valControles = this.validacionControles();
     if (valControles){
-      this.props.iniciarSesionUsuario(this.state.datosUsuario).then(
+      this.props.iniciarSesion(this.state.datosUsuario).then(
         (response)=>{
           //Se genera el token
           localStorage.setItem("token", "jasdajalkcecklwcljekwej");
@@ -182,8 +182,8 @@ validacionBoton(e){
 function mapStateToProps (state)
 {
   return {
-    usuarios: state.usuarios
+    usuarios: state.login
   }
 }
-export default connect(mapStateToProps, {iniciarSesionUsuario})(IniciarSesion);
+export default connect(mapStateToProps, {iniciarSesion})(IniciarSesion);
 

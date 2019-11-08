@@ -3,6 +3,7 @@ import {Redirect} from 'react-router-dom'
 import AlertaError from '../../componentes/AlertaError';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {saveUsuarios, iniciarSesionUsuario} from '../../actions/actionsUsuarios';
+import {iniciarSesion} from '../../actions/actionsIniciarSesion';
 import {connect} from 'react-redux';
 
 class RegistrarUsuario extends Component{
@@ -28,7 +29,7 @@ class RegistrarUsuario extends Component{
   }
   ingresoUsuario()
   {
-      this.props.iniciarSesionUsuario(this.state.datosUsuario).then(
+      this.props.iniciarSesion(this.state.datosUsuario).then(
         (response)=>{
           //Se genera el token
           localStorage.setItem("token", "jasdajalkcecklwcljekwej");
@@ -243,7 +244,8 @@ render(){
 function mapStateToProps (state)
 {
   return {
-    usuarios: state.usuarios
+    usuarios: state.usuarios,
+    login: state.login
   }
 }
-export default connect(mapStateToProps, {saveUsuarios, iniciarSesionUsuario})(RegistrarUsuario);
+export default connect(mapStateToProps, {saveUsuarios, iniciarSesion})(RegistrarUsuario);

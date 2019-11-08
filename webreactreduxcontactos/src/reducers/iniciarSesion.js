@@ -1,13 +1,12 @@
-
-import {ADD_USUARIOS} from "../actions/actionsUsuarios";
+import {LOGIN_USUARIOS} from "../actions/actionsIniciarSesion";
 
 
 export default function usuarios (state = [], action = {}){
     switch(action.type){      
-        case ADD_USUARIOS:
+        case LOGIN_USUARIOS:
             return [
                 ...state,
-                    action.usuarios
+                    action.login
             ];
         
         default: return state;

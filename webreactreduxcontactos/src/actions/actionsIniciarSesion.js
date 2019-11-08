@@ -1,10 +1,9 @@
-export const ADD_USUARIOS = 'ADD_USUARIOS';
+export const LOGIN_USUARIOS = 'LOGIN_USUARIOS';
 
-
-export function addUsuarios(usuarios){
+export function loginUsuario(login){
     return {
-        type: ADD_USUARIOS,
-        usuarios
+        type: LOGIN_USUARIOS,
+        login
     }
 }
 
@@ -21,9 +20,9 @@ function handleResponse(response){
     }
 }
 
-export function saveUsuarios(data){
+export function iniciarSesion(data){
     return dispatch =>{
-        return fetch('https://localhost:44328/api/Usuarios/Registrar', {
+        return fetch('https://localhost:44328/api/Usuarios/Ingresar', {
             method: 'post',
             body: JSON.stringify(data),
             headers:{
@@ -32,7 +31,7 @@ export function saveUsuarios(data){
         })
         .then(handleResponse)
         .then(data => dispatch(
-            addUsuarios(data)
+            loginUsuario(data)
         ));
     }
 }
