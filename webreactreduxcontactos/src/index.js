@@ -18,11 +18,11 @@ const store =  createStore(
 )
 
 ReactDOM.render(
-    <Routers>
-        <Provider store = {store}>
-            <App />
-        </Provider>
-    </Routers>
+ 
+    <Provider store = {store}>
+        <App />
+    </Provider>
+   
 
 , document.getElementById('root'));
 

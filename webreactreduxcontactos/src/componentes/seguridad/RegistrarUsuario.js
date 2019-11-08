@@ -1,10 +1,9 @@
 import React, {Component, Fragment} from 'react'
 import {Redirect} from 'react-router-dom'
-import { withRouter } from 'react-router';
-import axios from  'axios';
-import AlertaSatisfactoria from '../../componentes/AlertaSatisfactoria';
 import AlertaError from '../../componentes/AlertaError';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {saveUsuarios, iniciarSesionUsuario} from '../../actions/actionsUsuarios';
+import {connect} from 'react-redux';
 
 class RegistrarUsuario extends Component{
   constructor(props){
@@ -29,21 +28,37 @@ class RegistrarUsuario extends Component{
   }
   ingresoUsuario()
   {
-      axios.post('https://localhost:44328/api/Usuarios/Ingresar', this.state.datosUsuario).then((response)=>{
-      //Se genera el token
-      localStorage.setItem("token", "jasdajalkcecklwcljekwej");
-      //Se setea que ingreso
-      this.setState({
-        loggedIn: true,
-        alert_message: ''
-      });
-      //Se inicializan la variable editarContactoModal y el objeto de datosEditarContacto
-      this.setState({datosUsuario: {
-        Email: '',
-        Password: '',
-        ConfirmPassword: ''
-          }});
+      this.props.iniciarSesionUsuario(this.state.datosUsuario).then(
+        (response)=>{
+          //Se genera el token
+          localStorage.setItem("token", "jasdajalkcecklwcljekwej");
+            //Se setea que ingreso
+            this.setState({
+              loggedIn: true,
+              alert_message: '',
+              datosUsuario: {
+                Email: '',
+                Password: '',
+                ConfirmPassword: ''
+                  }
+                });
+        }, 
+        (err) => err.response.json().then(()=>{
+          //Entra cuando los errores son superficiales, por ejemplo cuando los datos que se capturan no 
+          //coinciden con el tipo de dato 
+          this.setState({
+            isError:'true',
+            alert_message: 'El usuario no pudo iniciar sesión'
+          })
+        })
+      ).catch(error=>{
+        //entra cuando los errores se propagan desde la base de datos, por ejemplo cuando la logitud de un 
+        //  es superior al campo de la base de datos
+        this.setState({
+          isError:'true',
+          alert_message: 'El usuario no pudo iniciar sesión'
         });
+      });
   }
 
    validacionControles() {
@@ -91,17 +106,31 @@ class RegistrarUsuario extends Component{
   {
     let valControles = this.validacionControles();
     if (valControles){
-          axios.post('https://localhost:44328/api/Usuarios/Registrar', this.state.datosUsuario).then((response)=>{
-          //Se refresca el Table
+
+      this.props.saveUsuarios(this.state.datosUsuario).then(
+        (response)=>{
           this.ingresoUsuario();
-          //Se inicializan la variable editarContactoModal y el objeto de datosEditarContacto
-        }).catch(error=>{
-            this.setState({
-              alert_message: 'No se pudo registrar el usuario'
-            });
+        }, 
+        (err) => err.response.json().then(()=>{
+          //Entra cuando los errores son superficiales, por ejemplo cuando los datos que se capturan no 
+          //coinciden con el tipo de dato 
+          this.setState({
+            isError:'true',
+            alert_message: 'No se pudo agregar el usuario'
+          })
+        }
+        )
+      ).catch(error=>{
+        //entra cuando los errores se propagan desde la base de datos, por ejemplo cuando la logitud de un 
+        //  es superior al campo de la base de datos
+        this.setState({
+          isError:'true',
+          alert_message: 'No se pudo agregar el usuario'
+        });
       });
+
     }
-}
+  }
 
 validacionBoton(e){
   if (e == 'true'){
@@ -211,5 +240,10 @@ render(){
         )
       }
 }
-
-export default RegistrarUsuario;
+function mapStateToProps (state)
+{
+  return {
+    usuarios: state.usuarios
+  }
+}
+export default connect(mapStateToProps, {saveUsuarios, iniciarSesionUsuario})(RegistrarUsuario);

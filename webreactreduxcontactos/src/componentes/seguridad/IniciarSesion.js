@@ -1,12 +1,11 @@
 import React, {Component, Fragment} from 'react'
 import {Redirect} from 'react-router-dom'
- import { withRouter } from 'react-router';
- import axios from 'axios';
- import AlertaSatisfactoria from '../../componentes/AlertaSatisfactoria';
- import AlertaError from '../../componentes/AlertaError';
- import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import AlertaError from '../AlertaError';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {iniciarSesionUsuario} from '../../actions/actionsUsuarios';
+import {connect} from 'react-redux';
 
-class Ingresar extends Component{
+class IniciarSesion extends Component{
   constructor(props){
     super(props);
     const token = localStorage.getItem("token");
@@ -49,31 +48,40 @@ class Ingresar extends Component{
 
   submitForm()
   {
-
     let valControles = this.validacionControles();
     if (valControles){
-      axios.post('https://localhost:44328/api/Usuarios/Ingresar', this.state.datosUsuario).then((response)=>{
-        //Se genera el token
-        localStorage.setItem("token", "jasdajalkcecklwcljekwej");
-        //Se setea que ingreso
-        this.setState({
-          loggedIn: true,
-          alert_message: ''
-        });
-        //Se inicializan la variable editarContactoModal y el objeto de datosEditarContacto
-        this.setState({datosUsuario: {
-          Email: '',
-          Password: '',
-          RemenberMe: false
-            }});
-        }).catch(error=>{
-
+      this.props.iniciarSesionUsuario(this.state.datosUsuario).then(
+        (response)=>{
+          //Se genera el token
+          localStorage.setItem("token", "jasdajalkcecklwcljekwej");
+            //Se setea que ingreso
             this.setState({
-              alert_message: 'Credenciales incorrectas'
+              loggedIn: true,
+              alert_message: '',
+              datosUsuario: {
+                Email: '',
+                Password: '',
+                RemenberMe: false
+                  }
             });
+        }, 
+        (err) => err.response.json().then(()=>{
+          //Entra cuando los errores son superficiales, por ejemplo cuando los datos que se capturan no 
+          //coinciden con el tipo de dato 
+          this.setState({
+            isError:'true',
+            alert_message: 'El usuario no puede iniciar sesión'
+          })
+        })
+      ).catch(error=>{
+        //entra cuando los errores se propagan desde la base de datos, por ejemplo cuando la logitud de un 
+        //  es superior al campo de la base de datos
+        this.setState({
+          isError:'true',
+          alert_message: 'El usuario no puede iniciar sesión'
+        });
       });
     }
-
 }
 
 validacionBoton(e){
@@ -101,7 +109,7 @@ validacionBoton(e){
           <div id="container" className="container">
               <div className="row">
                   <div className="col-sm-6 offset-sm-4 text-center">
-                    <h1 className="col-sm-7 display-5  my-4">Login</h1>
+                    <h1 className="col-sm-7 display-5  my-4">Iniciar sesión</h1>
                     <div className="info-form col-sm-7">
                             <div className="form-group">
                               <div className="input-group">
@@ -171,5 +179,11 @@ validacionBoton(e){
       )
     }
 }
+function mapStateToProps (state)
+{
+  return {
+    usuarios: state.usuarios
+  }
+}
+export default connect(mapStateToProps, {iniciarSesionUsuario})(IniciarSesion);
 
-export default Ingresar;

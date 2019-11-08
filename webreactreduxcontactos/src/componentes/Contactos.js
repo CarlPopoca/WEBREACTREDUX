@@ -365,7 +365,7 @@ validarContacto(contacto) {
         
             <FormGroup>
               <Label for="Nombre">Nombre</Label>
-              <Input style={this.validacionInput(this.state.isNullNombre)} onChange={(e)=>{
+              <Input id="Nombre" style={this.validacionInput(this.state.isNullNombre)} onChange={(e)=>{
                 let {datosNuevoContacto} = this.state;
                 datosNuevoContacto.Nombre = e.target.value;
                 this.setState({datosNuevoContacto});
