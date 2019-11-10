@@ -11,16 +11,32 @@ import logo from './logo.svg';
 import './App.css';
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { fab } from '@fortawesome/free-brands-svg-icons';
-import { faCheckSquare, faCoffee, faTrashAlt, faExclamationTriangle, faTimes, faCheck, faUserCircle, faKey, faSignInAlt, faDatabase} from '@fortawesome/free-solid-svg-icons';
+import MDSpinner from "react-md-spinner";
+import { faCheckSquare, faCoffee, faTrashAlt, faExclamationTriangle, faTimes, faCheck, faUserCircle, faKey, faSignInAlt, faDatabase, faSyncAlt} from '@fortawesome/free-solid-svg-icons';
 
 //Una Clase que extiende del component de React se comvierte en una etiqueta html
 class App extends Component  {
+  constructor(props){
+    super(props);
+    this.state = {
+      isLoading:true
+    }
+  }
+  componentDidMount()
+  {
+    //Este metodo se ejecuta despues de componentWillMount, si esta variable se setea a false en componentWillMount
+    // la variable llega a true cuando se renderiza el menú y ya no se mostraría el spinner caundo se cargue la página
+    this.setState({isLoading:false});
+  }
   render(){
-    library.add(fab, faCheckSquare, faCoffee, faTrashAlt, faExclamationTriangle, faTimes, faCheck, faUserCircle, faKey, faSignInAlt, faDatabase);
+    library.add(fab, faCheckSquare, faCoffee, faTrashAlt, faExclamationTriangle, faTimes, faCheck, faUserCircle, faKey, faSignInAlt, faDatabase, faSyncAlt) ;
+      if (this.state.isLoading){
+        return  <MDSpinner className="spinner" size={50}/>
+      }
       return(
-        <div className="App">
+        <div className="App">        
           <header className="App-header">
-            <img src={logo} className="App-logo" alt="logo" />
+              <img src={logo} className="App-logo" alt="logo" />
           </header>
           <body>
             <Routers>

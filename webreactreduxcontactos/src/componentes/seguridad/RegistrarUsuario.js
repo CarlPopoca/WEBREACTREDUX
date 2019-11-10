@@ -15,6 +15,7 @@ class RegistrarUsuario extends Component{
       loggedIn = false;
     }
     this.state = {
+      loading: false,
       alert_message:'',
       datosUsuario: {
         Email: '',
@@ -27,7 +28,7 @@ class RegistrarUsuario extends Component{
       isNullComfirmPassword: ''
     }
   }
-  ingresoUsuario()
+  iniciarSesion()
   {
       this.props.iniciarSesion(this.state.datosUsuario).then(
         (response)=>{
@@ -107,16 +108,19 @@ class RegistrarUsuario extends Component{
   {
     let valControles = this.validacionControles();
     if (valControles){
-
+      this.setState({
+        loading: true
+      });
       this.props.saveUsuarios(this.state.datosUsuario).then(
         (response)=>{
-          this.ingresoUsuario();
+          this.iniciarSesion();
         }, 
         (err) => err.response.json().then(()=>{
           //Entra cuando los errores son superficiales, por ejemplo cuando los datos que se capturan no 
           //coinciden con el tipo de dato 
           this.setState({
-            isError:'true',
+            loading: false,
+            isError: 'true',
             alert_message: 'No se pudo agregar el usuario'
           })
         }
@@ -125,11 +129,11 @@ class RegistrarUsuario extends Component{
         //entra cuando los errores se propagan desde la base de datos, por ejemplo cuando la logitud de un 
         //  es superior al campo de la base de datos
         this.setState({
+          loading: false,
           isError:'true',
           alert_message: 'No se pudo agregar el usuario'
         });
       });
-
     }
   }
 
@@ -144,6 +148,7 @@ validacionBoton(e){
 }
 
 render(){
+  const {loading} = this.state;
   if (this.state.loggedIn===true){
     //Otra forma de hacer redirect
     // this.props.history.push("/")
@@ -229,9 +234,10 @@ render(){
                               </div>
                             </div>
                             <div className="form-group">
-                                 <button className="btn btn-success" onClick={this.submitForm.bind(this)}>
-                                   <FontAwesomeIcon className="mr-1" icon="database" />
-                                   Guardar</button>
+                              <button className="btn btn-success" onClick={this.submitForm.bind(this)}>
+                                {loading?<FontAwesomeIcon className="mr-2" icon="sync-alt" spin />: <FontAwesomeIcon className="mr-2" icon="database" />}
+                                Guardar
+                              </button>
                             </div>
                       </div>
                 </div>

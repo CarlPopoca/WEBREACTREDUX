@@ -5,4 +5,4 @@ Abra un cmd y posicionese en la carpeta donde tendra el codigo del aplicativo, y
 
 *****Comandos para la configuración de la aplicación********
 
-yarn add react react-dom react-router react-router-dom bootstrap reactstrap react-bootstrap redux react-redux redux-devtools-extension redux-thunk react-fetch react-confirm-alert axios @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons @fortawesome/react-fontawesome @fortawesome/free-brands-svg-icons 
+yarn add react react-dom react-router react-router-dom bootstrap reactstrap react-bootstrap redux react-redux redux-devtools-extension redux-thunk react-fetch react-confirm-alert react-md-spinner @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons @fortawesome/react-fontawesome @fortawesome/free-brands-svg-icons 

@@ -14,6 +14,7 @@ class IniciarSesion extends Component{
       loggedIn = false;
     }
     this.state = {
+      loading: false,
       alert_message:'',
       datosUsuario: {
         Email: '',
@@ -50,12 +51,16 @@ class IniciarSesion extends Component{
   {
     let valControles = this.validacionControles();
     if (valControles){
+      this.setState({
+        loading:true
+      });
       this.props.iniciarSesion(this.state.datosUsuario).then(
         (response)=>{
           //Se genera el token
           localStorage.setItem("token", "jasdajalkcecklwcljekwej");
             //Se setea que ingreso
             this.setState({
+              loading:false,
               loggedIn: true,
               alert_message: '',
               datosUsuario: {
@@ -69,7 +74,8 @@ class IniciarSesion extends Component{
           //Entra cuando los errores son superficiales, por ejemplo cuando los datos que se capturan no 
           //coinciden con el tipo de dato 
           this.setState({
-            isError:'true',
+            loading: false,
+            isError: 'true',
             alert_message: 'El usuario no puede iniciar sesión'
           })
         })
@@ -77,7 +83,8 @@ class IniciarSesion extends Component{
         //entra cuando los errores se propagan desde la base de datos, por ejemplo cuando la logitud de un 
         //  es superior al campo de la base de datos
         this.setState({
-          isError:'true',
+          loading: false,
+          isError: 'true',
           alert_message: 'El usuario no puede iniciar sesión'
         });
       });
@@ -95,6 +102,7 @@ validacionBoton(e){
 }
 
   render(){
+    const {loading} = this.state;
     if (this.state.loggedIn===true){
       //Otra forma de hacer redirect
       // this.props.history.push("/")
@@ -168,7 +176,7 @@ validacionBoton(e){
                         </div>
                          <div className="form-group">
                              <button className="btn btn-success" onClick={this.submitForm.bind(this)}>
-                               <FontAwesomeIcon className="mr-2" icon="sign-in-alt" />
+                             {loading?<FontAwesomeIcon className="mr-2" icon="sync-alt" spin />: <FontAwesomeIcon className="mr-2" icon="sign-in-alt" />}
                                Ingresar</button>
                         </div>
                     </div>

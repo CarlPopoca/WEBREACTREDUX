@@ -34,7 +34,6 @@ export function delContactos(Id){
     }
 }
 function handleResponse(response){
-  
     if (response.ok){
         //Cuando la respuesta es satisfactoría
         return response.json();
@@ -59,12 +58,18 @@ function handleResponseNoJson(response){
 }
 export function fetchContactos()
 {
-
     return dispatch =>{
-        fetch('https://localhost:44386/api/Contactos')
-        .then(res => res.json()).then(data => dispatch(setContactos(data)));
-    }
-    
+       return fetch('https://localhost:44386/api/Contactos', {
+            method: 'get',
+            headers:{
+                "content-Type":"application/json"
+            }
+        })
+        .then(handleResponse)
+        .then(data => dispatch(
+            setContactos(data)
+        ));
+    }  
 }
 export function saveContactos(data){
     return dispatch =>{

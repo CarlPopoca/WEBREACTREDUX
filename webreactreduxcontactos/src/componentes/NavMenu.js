@@ -1,4 +1,4 @@
-import React, {Component, Fragment} from 'react';
+import React, {Component, Fragment, lazy, Suspense} from 'react';
 import {Nav, NavItem} from 'reactstrap';
 import {withRouter,NavLink} from 'react-router-dom';
 import Navbar from 'react-bootstrap/Navbar';

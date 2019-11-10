@@ -8,7 +8,6 @@ import thunk from 'redux-thunk';
 import rootReducer from './rootReducer';
 import {composeWithDevTools} from 'redux-devtools-extension';
 import {Provider} from 'react-redux';
-import {BrowserRouter as Routers, Link, Switch, Route, withRouter } from 'react-router-dom';
 
 const store =  createStore(
     rootReducer,
@@ -18,12 +17,9 @@ const store =  createStore(
 )
 
 ReactDOM.render(
- 
     <Provider store = {store}>
         <App />
     </Provider>
-   
-
 , document.getElementById('root'));
 
 // If you want your app to work offline and load faster, you can change
