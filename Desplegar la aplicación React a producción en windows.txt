@@ -31,7 +31,6 @@
 </system.webServer>
 </configuration>
 
-
 --Descargue el programa urlrewrite dela siguiente ruta e instalelo:
 
 	https://www.iis.net/downloads/microsoft/url-rewrite
