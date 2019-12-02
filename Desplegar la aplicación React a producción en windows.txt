@@ -1,7 +1,9 @@
 --Genere el build que se utilizara a desplegar en producción
+
 	yarn build
 
 --Para crear establecer el directorio como servidor estatico
+
 	npm install -g serve
 
 --Para cambiarle el puerto al server 
@@ -10,7 +12,7 @@
 
 --Copiar la carpeta build que se genero y copiarla en una ruta diferente, va a ser la que se establecera en el IIS
 
---crear un archvo web.config y agregue lo siguiente:
+--Crear un archvo web.config y agregue lo siguiente:
 
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
@@ -48,8 +50,8 @@
 	* Por último de clic en el botón Aceptar.
 	* Pruebe el sitio web dando clic derecho sobre el sitio web, después en Administrar sitio web y por último en examinar.
 
-Nota: Si desea cambiar el puerto del sitio web react considere que podría hacer un cambio en los servicios en la clase startup.cs 
-y dentro del método configure en la línea de código app.UseCors para que el servicio pueda permitirle al sitio web de react utilizar 
+Nota: Si desea cambiar el puerto del sitio web considere que podría hacer un cambio en los servicios en la clase startup.cs 
+y dentro del método configure en la línea de código app.UseCors para que el servicio pueda permitirle al sitio web utilizar 
 sus métodos.
 
 
