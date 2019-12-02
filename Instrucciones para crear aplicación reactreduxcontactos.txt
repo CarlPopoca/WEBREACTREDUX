@@ -6,3 +6,11 @@ Abra un cmd y posicionese en la carpeta donde tendra el codigo del aplicativo, y
 *****Comandos para la configuración de la aplicación********
 
 yarn add react react-dom react-router react-router-dom bootstrap reactstrap react-bootstrap redux react-redux redux-devtools-extension redux-thunk react-fetch react-confirm-alert react-md-spinner @fortawesome/fontawesome-svg-core @fortawesome/free-solid-svg-icons @fortawesome/react-fontawesome @fortawesome/free-brands-svg-icons 
+
+****Añadir carpeta node_modules a repositorio de github, siga las siguientes instrucciones****
+
+	- Abra el archivo .gitignore y quite la línea de código /node_modules
+
+	Nota: Se recomienta que no la quite ya que ocupara muchos megas en el repositorio y además se pueden descargar todas las librerías ejecutando el 
+	comando npm install sobre la carpeta de la aplicación, ya que todas las dependencias estan declaradas en el archivo package.json
+
