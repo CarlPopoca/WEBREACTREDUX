@@ -15,7 +15,7 @@ import MDSpinner from "react-md-spinner";
 import { faCheckSquare, faCoffee, faTrashAlt, faExclamationTriangle, faTimes, faCheck, faUserCircle, faKey, faSignInAlt, faDatabase, faSyncAlt} from '@fortawesome/free-solid-svg-icons';
 
 //Una Clase que extiende del component de React se comvierte en una etiqueta html
-class App extends Component  {
+class App extends Component {
   constructor(props){
     super(props);
     this.state = {
