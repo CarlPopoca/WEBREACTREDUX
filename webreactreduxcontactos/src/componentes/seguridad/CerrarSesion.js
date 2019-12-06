@@ -2,6 +2,8 @@ import React, {Component} from 'react';
 import { Link, Redirect} from 'react-router-dom';
 import axios from 'axios';
 import AlertaError from '../../componentes/AlertaError';
+import {cerrarSesion} from '../../actions/actionsSesion';
+import {connect} from 'react-redux';
 
 class CerrarSesion extends Component{
   constructor(props){
@@ -19,17 +21,26 @@ class CerrarSesion extends Component{
   }
   Salir()
   {
-    axios.post('https://localhost:44328/api/Usuarios/CerrarSesion').then((response)=>{
-          localStorage.removeItem("token");
-          this.setState({
-            loggedIn: false
-          });
-      }).catch(error=>{
 
-          this.setState({
-            alert_message: 'Hubo un error al cerrar la sesión'
-          });
+    this.props.cerrarSesion().then(
+      ()=>{
+        localStorage.removeItem("token");
+        this.setState({
+          loggedIn: false
         });
+      },
+      (err) => err.response.json().then(()=>{
+        this.setState({
+          alert_message: 'Hubo un error al cerrar la sesión'
+        });
+      })
+    ).catch(error=>{
+      //entra cuando los errores se propagan desde la base de datos, por ejemplo cuando la logitud de un 
+      //  es superior al campo de la base de datos
+      this.setState({
+        alert_message: 'Hubo un error al cerrar la sesión'
+      });
+    });
  }
   render(){
       // this.props.history.push("/")
@@ -45,4 +56,10 @@ class CerrarSesion extends Component{
   }
 }
 
-export default CerrarSesion;
+function mapStateToProps (state)
+{
+  return {
+    usuarios: state.usuario
+  }
+}
+export default connect(mapStateToProps, {cerrarSesion})(CerrarSesion);

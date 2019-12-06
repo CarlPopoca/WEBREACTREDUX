@@ -1,13 +1,14 @@
-import {LOGIN_USUARIOS} from "../actions/actionsIniciarSesion";
+import {LOGIN_USUARIO, LOGOUT_USUARIO} from "../actions/actionsSesion";
 
 
 export default function usuarios (state = [], action = {}){
     switch(action.type){      
-        case LOGIN_USUARIOS:
+        case LOGIN_USUARIO, LOGOUT_USUARIO:
             return [
                 ...state,
-                    action.login
+                    action.usuario
             ];
+
         
         default: return state;
     }

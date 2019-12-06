@@ -3,7 +3,7 @@ import {Redirect} from 'react-router-dom'
 import AlertaError from '../../componentes/AlertaError';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {saveUsuarios, iniciarSesionUsuario} from '../../actions/actionsUsuarios';
-import {iniciarSesion} from '../../actions/actionsIniciarSesion';
+import {iniciarSesion} from '../../actions/actionsSesion';
 import {connect} from 'react-redux';
 
 class RegistrarUsuario extends Component{

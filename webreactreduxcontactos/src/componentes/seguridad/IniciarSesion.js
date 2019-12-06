@@ -2,7 +2,7 @@ import React, {Component, Fragment} from 'react'
 import {Redirect} from 'react-router-dom'
 import AlertaError from '../AlertaError';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {iniciarSesion} from '../../actions/actionsIniciarSesion';
+import {iniciarSesion} from '../../actions/actionsSesion';
 import {connect} from 'react-redux';
 
 class IniciarSesion extends Component{
@@ -190,7 +190,7 @@ validacionBoton(e){
 function mapStateToProps (state)
 {
   return {
-    usuarios: state.login
+    usuarios: state.usuario
   }
 }
 export default connect(mapStateToProps, {iniciarSesion})(IniciarSesion);
